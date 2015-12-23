@@ -5,8 +5,9 @@ import gulp from 'gulp';
 import gutil from 'gulp-util';
 import less from 'gulp-less';
 import minify from 'gulp-minify-css';
+import watch from 'gulp-watch';
 
-import sequence from 'run-sequence';
+import run from 'run-sequence';
 import browserSync from 'browser-sync';
 
 import path from 'path';
@@ -18,7 +19,7 @@ import webpack from 'webpack';
 const webpackConfig = {
     context: path.resolve('source'),
     entry: {
-        app: './scripts/app.js'
+        app: './app.module.js'
     },
     output: {
         path: path.resolve('app')
@@ -41,11 +42,9 @@ const sync = browserSync.create();
 gulp.task('clean', del.bind(null, ['app']));
 
 gulp.task('templates', () =>
-    gulp.src([
-            'source/index.html',
-            'source/templates'
-        ])
+    gulp.src('source/**/*.html')
         .pipe(gulp.dest('app/'))
+        .pipe(sync.stream({once: true}));
 );
 
 gulp.task('styles', () => {
@@ -73,10 +72,16 @@ gulp.task('scripts', (done) => {
 });
 
 gulp.task('build', (done) => {
-    sequence('clean', ['scripts', 'styles', 'templates'], done);
+    run('clean', ['scripts', 'styles', 'templates'], done);
 });
 
-gulp.task('default', ['build'], function () {
+gulp.task('watch', () => {
+    watch('source/**/*.js', () => run('scripts'));
+    watch('source/**/*.less', () => run('styles'));
+    watch('source/**/*.html', () => run('templates'));
+});
+
+gulp.task('default', ['build', 'watch'], function () {
     sync.init({
         server: 'app'
     });
