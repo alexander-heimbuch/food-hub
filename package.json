@@ -14,7 +14,8 @@
     "angular-animate": "^1.4.7",
     "angular-aria": "^1.4.7",
     "angular-material": "^0.11.4",
-    "angular-route": "^1.4.8"
+    "angular-route": "^1.4.8",
+    "vc-reset-css": "^0.2.2"
   },
   "devDependencies": {
     "babel-core": "^6.1.21",
@@ -26,12 +27,14 @@
     "del": "^2.1.0",
     "file-loader": "^0.8.4",
     "gulp": "^3.9.0",
-    "gulp-less": "^3.0.5",
+    "gulp-autoprefixer": "^3.1.0",
     "gulp-minify-css": "^1.2.1",
+    "gulp-sass": "^2.1.1",
     "gulp-util": "^3.0.7",
     "gulp-watch": "^4.3.5",
     "less": "^2.5.3",
     "run-sequence": "^1.1.4",
+    "sass-svg": "^0.2.1",
     "webpack": "^1.12.6"
   }
 }

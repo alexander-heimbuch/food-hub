@@ -1,0 +1,18 @@
+//
+// STYLE LOADER
+
+//
+// Vendor
+@import '../node_modules/vc-reset-css/reset.css';
+
+//
+// Fonts
+@import 'assets/fonts.css';
+
+//
+// Core
+@import 'core/core.style';
+
+//
+// Weather
+@import 'weather/weather.style';

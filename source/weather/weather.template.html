@@ -1,6 +1,38 @@
 <section class="weather" id="weather-view">
-Weather Template
-  <weather ng-repeat="hour in vm.hourly">
-    <time>{{hour.time}}</time>
-  </weather>
+  <div ng-repeat="weather in vm.hourly" class="weather-hour">
+    <icon class="icon {{weather.icon}}"></icon>
+    <span class="temperature">{{weather.temperature | number:0}} C&deg;</span>
+    <div class="precip">
+      <icon class="icon rain-drop"></icon>
+      <span class="percentage">10{{(100 * weather.precipProbability) || 0 | number:0}}%</span>
+    </div>
+
+    <time class="hour" datetime="{{weather.time | date:'yyyy-MM-dd HH:mm:ss Z'}}">{{weather.time | date:'HH:mm'}}</time>
+    <time class="date" datetime="{{weather.time | date:'yyyy-MM-dd HH:mm:ss Z'}}">{{weather.time | date:'EEEE'}}</time>
+    <expand>
+      <table>
+        <tr>
+          <td>Niederschlag:</td><td>{{weather.precipIntensity}} mm</td>
+        </tr>
+        <tr>
+          <td>Bewölkung:</td><td>{{(100 * weather.cloudCover) || 0 | number:0}}%</td>
+        </tr>
+        <tr>
+          <td>Luftfeuchtigkeit:</td><td>{{(100 * weather.humidity) || 0 | number:0}}%</td>
+        </tr>
+        <tr>
+          <td>Luftdruck:</td><td>{{weather.pressure}} hPa</td>
+        </tr>
+        <tr>
+          <td>Taupunkt:</td><td>{{weather.dewPoint}} C&deg;</td>
+        </tr>
+        <tr>
+          <td>Wind:</td><td>{{weather.windSpeed}} m/s</td>
+        </tr>
+        <tr>
+          <td>Ozon:</td><td>{{weather.ozone}}</td>
+        </tr>
+      </table>
+    </expand>
+  </div>
 </section>

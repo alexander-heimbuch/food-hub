@@ -3,7 +3,8 @@
 
 import gulp from 'gulp';
 import gutil from 'gulp-util';
-import less from 'gulp-less';
+import sass from 'gulp-sass';
+import prefixer from 'gulp-autoprefixer';
 import minify from 'gulp-minify-css';
 import watch from 'gulp-watch';
 
@@ -41,16 +42,26 @@ const sync = browserSync.create();
 
 gulp.task('clean', del.bind(null, ['app']));
 
-gulp.task('templates', () =>
-    gulp.src('source/**/*.html')
+gulp.task('templates', () => {
+    return gulp.src('source/**/*.html')
         .pipe(gulp.dest('app/'))
         .pipe(sync.stream({once: true}));
-);
+});
+
+gulp.task('assets', () => {
+    return gulp.src(['source/assets/**/*.*', '!source/assets/**/*.css'])
+        .pipe(gulp.dest('app/'))
+        .pipe(sync.stream({once: true}));
+});
 
 gulp.task('styles', () => {
-    return gulp.src('source/styles/main.less')
-        .pipe(less())
+    return gulp.src('source/main.scss')
+        .pipe(sass())
         .pipe(minify())
+        .pipe(prefixer({
+            browsers: ['last 2 versions'],
+            cascade: false
+        }))
         .pipe(gulp.dest('app'))
         .pipe(sync.stream({once: true}));
 });
@@ -72,21 +83,24 @@ gulp.task('scripts', (done) => {
 });
 
 gulp.task('build', (done) => {
-    run('clean', ['scripts', 'styles', 'templates'], done);
+    run('clean', ['scripts', 'styles', 'templates', 'assets'], done);
 });
 
 gulp.task('watch', () => {
     watch('source/**/*.js', () => run('scripts'));
-    watch('source/**/*.less', () => run('styles'));
+    watch('source/**/*.{scss, css}', () => run('styles'));
     watch('source/**/*.html', () => run('templates'));
+    watch(['source/assets/**/*.*'], () => run('assets'));
 });
 
 gulp.task('default', ['build', 'watch'], function () {
     sync.init({
-        server: 'app'
+        server: 'app',
+        ui: false,
+        open: false
     });
 
-    gulp.watch('source/styles/**/*.less', ['styles']);
+    gulp.watch('source/**/*.scss', ['styles']);
     gulp.watch('source/scripts/**/*.js', ['scripts'])
     gulp.watch('source/**/*.html', ['templates'])
 });
