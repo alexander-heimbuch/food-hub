@@ -29,6 +29,9 @@ const messageBus = (socket, signal) => {
         case 'weather-hourly':
             publishHours(socket, message.data.time, message.data.span);
         break;
+        case 'weather-daily':
+            publishDay(socket, message.data.time);
+        break;
     }
 };
 

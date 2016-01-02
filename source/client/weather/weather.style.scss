@@ -7,82 +7,146 @@ $weather-icon-size: 50px;
 //
 // Weather Module
 .weather {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
     height: 100%;
+    width: 100%;
 
-    .weather-hour {
-        flex: 0 1 20%;
-        min-width: 150px;
-        position: relative;
+    .weather-date {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 20%;
         text-align: center;
-        opacity: 1;
+        text-transform: uppercase;
+        font-size: 1.8em;
+    }
 
-        &:after {
-            position: absolute;
-            top: -5%;
-            right: 0;
-            content: '';
-            height: 110%;
-            border-right: 1px dotted lighten($font-color, 10%);
-            opacity: 0.5;
+    .weather-hour-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 60%;
+
+        .weather-hour {
+            flex: 0 1 20%;
+            min-width: 150px;
+            position: relative;
+            text-align: center;
+            opacity: 1;
+
+            &:after {
+                position: absolute;
+                top: -5%;
+                right: 0;
+                content: '';
+                height: 110%;
+                border-right: 1px dotted lighten($font-color, 10%);
+                opacity: 0.5;
+            }
+
+            &:last-child:after {
+                border-right: 1px solid transparent;
+            }
         }
-
-        &:last-child:after {
-            border-right: 1px solid transparent;
-        }
-    }
-
-    .icon {
-        margin: 0 auto $margin * 2 auto;
-        display: block;
-        width: $weather-icon-size;
-        height: $weather-icon-size;
-    }
-
-    .temperature {
-        display: block;
-        margin: 0 auto $margin * 4 auto;
-        padding-left: 0.5em;
-        font-size: 1.5em;
-    }
-
-    .precip {
-        margin-bottom: $margin * 4;
 
         .icon {
+            margin: 0 auto $margin * 2 auto;
             display: block;
-            margin: 0 auto 0 auto;
-            width: $weather-icon-size - 10;
-            height: $weather-icon-size - 10;
+            width: $weather-icon-size;
+            height: $weather-icon-size;
         }
 
-        .percentage {
-            font-size: 1.25em;
+        .temperature {
+            display: block;
+            margin: 0 auto $margin * 4 auto;
             padding-left: 0.5em;
+            font-size: 1.5em;
         }
-    }
 
-    .hour {
-        display: block;
-        margin: 0 auto;
-        font-size: 1.25em;
-    }
+        .precip {
+            margin-bottom: $margin * 4;
 
-    .date {
-        display: block;
-        margin: 0 auto;
-        font-size: 1.1em;
+            .icon {
+                display: block;
+                margin: 0 auto 0 auto;
+                width: $weather-icon-size - 10;
+                height: $weather-icon-size - 10;
+            }
+
+            .percentage {
+                font-size: 1.25em;
+                padding-left: 0.5em;
+            }
+        }
+
+        .hour {
+            display: block;
+            margin: 0 auto;
+            font-size: 1.25em;
+        }
+
+        .date {
+            display: block;
+            margin: 0 auto;
+            font-size: 1.1em;
+        }
+
+        expand {
+            @extend .visually-hidden
+        }
     }
 
     .weather-day {
-        display: block;
         position: absolute;
-    }
+        width: 100%;
+        height: 20%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 300;
+        text-align: center;
 
-    expand {
-        @extend .visually-hidden
+        .column {
+            width: 33%;
+            padding: $padding;
+        }
+
+        .icon-summary {
+            display: block;
+            margin: -2 * $margin auto $margin auto;
+            width: $weather-icon-size * 1.5;
+            height: $weather-icon-size * 1.5;
+        }
+
+        .temperature {
+            display: block;
+            padding-left: 80px;
+            font-size: 1.2em;
+
+            &.temperature-max {
+                margin-bottom: $margin;
+            }
+        }
+
+        .precip {
+            display: block;
+            padding-left: 80px;
+            font-size: 1.2em;
+
+            &.precip-probability {
+                margin-bottom: $margin;
+            }
+
+            &.precip-accumulation {
+                padding-left: 120px;
+            }
+        }
+
+        .column-headline {
+            text-transform: uppercase;
+            font-weight: 500;
+            margin-bottom: $margin;
+        }
     }
 }

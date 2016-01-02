@@ -1,39 +1,34 @@
 <section class="weather" id="weather-view" ng-swipe-left="vm.next($event)" ng-swipe-right="vm.prev($event)">
-  <div ng-repeat="weather in vm.hour" class="weather-hour">
-    <icon class="icon {{weather.icon}}"></icon>
-    <span class="temperature">{{weather.temperature | number:0}} C&deg;</span>
-    <div class="precip">
-      <icon class="icon rain-drop"></icon>
-      <span class="percentage">{{(100 * weather.precipProbability) || 0 | number:0}}%</span>
+  <time class="weather-date" datetime="{{vm.day.time | date:'yyyy-MM-dd HH:mm:ss Z'}}">{{vm.day.time | date:'d. MMMM'}}</time>
+
+  <div class="weather-hour-container">
+    <div ng-repeat="weather in vm.hour" class="weather-hour">
+      <icon class="icon {{weather.icon}}"></icon>
+      <span class="temperature">{{weather.temperature | number:0}} C&deg;</span>
+      <div class="precip">
+        <icon class="icon rain-drop"></icon>
+        <span class="percentage">{{(100 * weather.precipProbability) || 0 | number:0}}%</span>
+      </div>
+
+      <time class="hour" datetime="{{weather.time | date:'yyyy-MM-dd HH:mm:ss Z'}}">{{weather.time | date:'HH:mm'}}</time>
+      <time class="date" am-time-ago="weather.time" datetime="{{weather.time | date:'yyyy-MM-dd HH:mm:ss Z'}}"></time>
+    </div>
+  </div>
+
+  <div class="weather-day">
+    <div class="column">
+      <icon class="icon {{vm.day.icon}} icon-summary"></icon>
+      <span class="summary {{vm.day.icon}}">{{vm.day.summary}}</span>
     </div>
 
-    <time class="hour" datetime="{{weather.time | date:'yyyy-MM-dd HH:mm:ss Z'}}">{{weather.time | date:'HH:mm'}}</time>
-    <time class="date" am-time-ago="weather.time" datetime="{{weather.time | date:'yyyy-MM-dd HH:mm:ss Z'}}"></time>
-    <expand>
-      <table>
-        <tr>
-          <td>Niederschlag:</td><td>{{weather.precipIntensity}} mm</td>
-        </tr>
-        <tr>
-          <td>Bewölkung:</td><td>{{(100 * weather.cloudCover) || 0 | number:0}}%</td>
-        </tr>
-        <tr>
-          <td>Luftfeuchtigkeit:</td><td>{{(100 * weather.humidity) || 0 | number:0}}%</td>
-        </tr>
-        <tr>
-          <td>Luftdruck:</td><td>{{weather.pressure}} hPa</td>
-        </tr>
-        <tr>
-          <td>Taupunkt:</td><td>{{weather.dewPoint}} C&deg;</td>
-        </tr>
-        <tr>
-          <td>Wind:</td><td>{{weather.windSpeed}} m/s</td>
-        </tr>
-        <tr>
-          <td>Ozon:</td><td>{{weather.ozone}}</td>
-        </tr>
-      </table>
-    </expand>
+    <div class="column">
+      <span class="temperature temperature-max">{{vm.day.temperatureMax | number:0}} C&deg;</span>
+      <span class="temperature temperature-min">{{vm.day.temperatureMin | number:0}} C&deg;</span>
+    </div>
+
+    <div class="column">
+      <span class="precip precip-probability rain-drop">{{(100 * vm.day.precipProbability) || 0 | number:0}}%</span>
+      <span class="precip precip-accumulation rain">{{vm.day.precipAccumulation | number:1}} mm</span>
+    </div>
   </div>
-  <div class="weather-day">{{vm.day.summary}}</div>
 </section>

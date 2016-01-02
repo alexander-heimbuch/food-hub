@@ -150,7 +150,7 @@ gulp.task('build', (done) => {
 
 gulp.task('watch', () => {
     watch(clientSource + '/**/*.js', () => run('client-source'));
-    watch(clientSource + '/**/*.{scss, css}', () => run('styles'));
+    watch(clientSource + '/**/*.scss', () => run('styles'));
     watch(clientSource + '/**/*.html', () => run('templates'));
     watch(clientSource + '/assets/**/*.*', () => run('assets'));
 

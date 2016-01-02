@@ -7,21 +7,53 @@ const WeatherController = function (socket, $scope) {
     vm.hour = [];
     vm.day = {};
 
+    vm.current = (() => {
+        let timer;
+        console.log('timer');
+        return () => {
+            console.log('restart timer');
+            if (timer !== undefined) {
+                clearTimeout(timer);
+            }
+
+            timer = setTimeout(() => {
+                socket.send('weather-hourly', {});
+                socket.send('weather-daily', {});
+             }, 60 * 1000 * 10);
+        }
+    })();
+
     vm.timespan = 60 * 60 * 1000 * 5;
 
 
     vm.next = () => {
+        let requestTime = vm.hour[0].time + vm.timespan;
+
         socket.send('weather-hourly', {
-            time: vm.hour[0].time + vm.timespan,
+            time: requestTime,
             span: 5
         });
+
+        socket.send('weather-daily', {
+            time: requestTime
+        });
+
+        vm.current();
     };
 
     vm.prev = () => {
+        let requestTime = vm.hour[0].time - vm.timespan;
+
         socket.send('weather-hourly', {
-            time: vm.hour[0].time - vm.timespan,
+            time: requestTime,
             span: 5
         });
+
+        socket.send('weather-daily', {
+            time: requestTime
+        });
+
+        vm.current();
     };
 
     socket.listen('weather-hourly', (hours) => {
@@ -35,10 +67,10 @@ const WeatherController = function (socket, $scope) {
     });
 
     socket.listen('weather-daily', (day) => {
-        if (day === undefined) {
+        if (day === null) {
             return;
         }
-        console.log(day);
+
         $scope.$apply(() => {
             vm.day = day;
         });
