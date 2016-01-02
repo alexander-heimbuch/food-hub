@@ -1,0 +1,14 @@
+{
+    "table": {
+        "hourly": "weather_hourly",
+        "daily": "weather_daily"
+    },
+    "service": {
+        "key": "02f5985fb338fe21d4764e81067eb374",
+        "lat": "50.982980",
+        "long": "11.331020",
+        "options": {
+            "units": "si"
+        }
+    }
+}

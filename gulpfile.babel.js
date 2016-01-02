@@ -1,5 +1,4 @@
 /* eslint-env node es6 */
-'use strict';
 
 import gulp from 'gulp';
 import gutil from 'gulp-util';
@@ -7,23 +6,29 @@ import sass from 'gulp-sass';
 import prefixer from 'gulp-autoprefixer';
 import minify from 'gulp-minify-css';
 import watch from 'gulp-watch';
+import sync from 'browser-sync';
 
 import run from 'run-sequence';
-import browserSync from 'browser-sync';
+import nodemon from 'gulp-nodemon';
 
 import path from 'path';
 import del from 'del';
 
 import webpack from 'webpack';
 
-// Start a webpack-dev-server
-const webpackConfig = {
-    context: path.resolve('source'),
+//
+// Client Config
+const clientSource = 'source/client';
+
+const clientConfig = {
+    context: path.resolve(clientSource),
+    devtool: 'source-map',
     entry: {
         app: './app.module.js'
     },
     output: {
-        path: path.resolve('app')
+        path: path.resolve('app/client'),
+        filename: 'client.js'
     },
     module: {
         loaders: [{
@@ -38,36 +43,79 @@ const webpackConfig = {
     }
 };
 
-const sync = browserSync.create();
+
+//
+// Server Config
+const serverSource = 'source/server';
+
+const serverConfig = {
+    context: path.resolve(serverSource),
+    devtool: 'source-map',
+    target: 'node',
+    node: {
+        console: true
+    },
+    entry: {
+        app: './index.js'
+    },
+    output: {
+        path: path.resolve('app'),
+        filename: 'server.js'
+    },
+    module: {
+        loaders: [{
+            test: /\.js$/,
+            loader: 'babel-loader',
+            exclude: /node_modules/
+        }, {
+            test: /\.json$/,
+            loader: 'json-loader'
+        }]
+    }
+}
+
+let server = {restart: () => {}};
 
 gulp.task('clean', del.bind(null, ['app']));
 
 gulp.task('templates', () => {
-    return gulp.src('source/**/*.html')
-        .pipe(gulp.dest('app/'))
-        .pipe(sync.stream({once: true}));
+    return gulp.src(clientSource + '/**/*.html')
+        .pipe(gulp.dest('app/client/'));
 });
 
 gulp.task('assets', () => {
-    return gulp.src(['source/assets/**/*.*', '!source/assets/**/*.css'])
-        .pipe(gulp.dest('app/'))
-        .pipe(sync.stream({once: true}));
+    return gulp.src([
+            clientSource + '/assets/**/*.*',
+            '!' + clientSource + '/assets/**/*.css',
+            '!' + clientSource + '/assets/**/*.scss'
+        ])
+        .pipe(gulp.dest('app/client/'));
 });
 
 gulp.task('styles', () => {
-    return gulp.src('source/main.scss')
-        .pipe(sass())
+    return gulp.src(clientSource + '/main.scss')
+        .pipe(sass().on('error', sass.logError))
         .pipe(minify())
         .pipe(prefixer({
             browsers: ['last 2 versions'],
             cascade: false
         }))
-        .pipe(gulp.dest('app'))
-        .pipe(sync.stream({once: true}));
+        .pipe(gulp.dest('app/client/'));
 });
 
-gulp.task('scripts', (done) => {
-    webpack(webpackConfig, (err, stats) => {
+gulp.task('icons', () => {
+    return gulp.src(clientSource + '/assets/icons.scss')
+        .pipe(sass().on('error', sass.logError))
+        .pipe(minify())
+        .pipe(prefixer({
+            browsers: ['last 2 versions'],
+            cascade: false
+        }))
+        .pipe(gulp.dest('app/client/'));
+});
+
+gulp.task('client-source', (done) => {
+    webpack(clientConfig, (err, stats) => {
         if (err) {
             throw new gutil.PluginError('webpack', err);
         }
@@ -76,31 +124,62 @@ gulp.task('scripts', (done) => {
             colors: true
         }));
 
-        sync.reload('bundle.js');
+        done();
+    });
+});
+
+gulp.task('server-source', (done) => {
+    webpack(serverConfig, (err, stats) => {
+        if (err) {
+            throw new gutil.PluginError('webpack', err);
+        }
+
+        gutil.log('[webpack]', stats.toString({
+            colors: true
+        }));
+
+        server.restart();
 
         done();
     });
 });
 
 gulp.task('build', (done) => {
-    run('clean', ['scripts', 'styles', 'templates', 'assets'], done);
+    run('clean', ['client-source', 'server-source', 'icons', 'styles', 'templates', 'assets'], done);
 });
 
 gulp.task('watch', () => {
-    watch('source/**/*.js', () => run('scripts'));
-    watch('source/**/*.{scss, css}', () => run('styles'));
-    watch('source/**/*.html', () => run('templates'));
-    watch(['source/assets/**/*.*'], () => run('assets'));
+    watch(clientSource + '/**/*.js', () => run('client-source'));
+    watch(clientSource + '/**/*.{scss, css}', () => run('styles'));
+    watch(clientSource + '/**/*.html', () => run('templates'));
+    watch(clientSource + '/assets/**/*.*', () => run('assets'));
+
+    watch(serverSource + '/**/*.*', () => run('server-source'));
 });
 
-gulp.task('default', ['build', 'watch'], function () {
-    sync.init({
-        server: 'app',
+gulp.task('browser-sync', () =>
+    sync.init(null, {
+        proxy: 'http://localhost:3000',
+        files: ['app/client/**/*.js', 'app/client/**/*.css', 'app/client/**/*.html'],
         ui: false,
-        open: false
-    });
+        open: false,
+        port: 7000
+    })
+);
 
-    gulp.watch('source/**/*.scss', ['styles']);
-    gulp.watch('source/scripts/**/*.js', ['scripts'])
-    gulp.watch('source/**/*.html', ['templates'])
+gulp.task('default', ['build', 'watch'], () => {
+    let started = false;
+
+    server = nodemon({
+            script: './app/server.js',
+            env: { 'NODE_ENV': 'development'},
+            ignore: ['*']
+        });
+
+    server.on('start', () => {
+        if (started === false) {
+            run('browser-sync');
+        }
+        started = true;
+    });
 });
