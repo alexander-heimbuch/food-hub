@@ -11,7 +11,8 @@
       </div>
 
       <time class="hour" datetime="{{weather.time | date:'yyyy-MM-dd HH:mm:ss Z'}}">{{weather.time | date:'HH:mm'}}</time>
-      <time class="date" am-time-ago="weather.time" datetime="{{weather.time | date:'yyyy-MM-dd HH:mm:ss Z'}}"></time>
+      <time class="date" datetime="{{weather.time | date:'yyyy-MM-dd HH:mm:ss Z'}}" ng-if="$index === 0">now</time>
+      <time class="date" am-time-ago="weather.time" datetime="{{weather.time | date:'yyyy-MM-dd HH:mm:ss Z'}}"  ng-if="$index > 0"></time>
     </div>
   </div>
 
