@@ -48,7 +48,7 @@
     "json-loader": "^0.5.4",
     "less": "^2.5.3",
     "run-sequence": "^1.1.4",
-    "sass-svg": "^0.2.1",
+    "sass-svg": "^0.3.0",
     "webpack": "^1.12.6"
   }
 }

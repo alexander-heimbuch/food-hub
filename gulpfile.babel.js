@@ -40,6 +40,10 @@ const clientConfig = {
             loader: 'babel-loader',
             exclude: /node_modules/
         }]
+    },
+    node: {
+        fs: 'empty',
+        tls: 'empty'
     }
 };
 

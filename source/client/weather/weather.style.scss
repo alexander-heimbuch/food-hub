@@ -114,9 +114,16 @@ $weather-icon-size: 50px;
 
         .icon-summary {
             display: block;
-            margin: -2 * $margin auto $margin auto;
-            width: $weather-icon-size * 1.5;
-            height: $weather-icon-size * 1.5;
+            float: left;
+            margin: $margin $margin 0 0;
+            width: $weather-icon-size / 1.3;
+            height: $weather-icon-size / 1.3;
+        }
+
+        .summary {
+            display: block;
+            font-size: 1.2em;
+            line-height: 100%;
         }
 
         .temperature {
@@ -131,7 +138,7 @@ $weather-icon-size: 50px;
 
         .precip {
             display: block;
-            padding-left: 80px;
+            padding-left: 90px;
             font-size: 1.2em;
 
             &.precip-probability {
