@@ -1,17 +1,19 @@
 /*eslint-env browser, es6*/
-import data from './test-data';
+import dateToSeason from 'date-season';
+import backgrounds from 'json!./weather.backgrounds.json';
 
 const WeatherController = function (socket, $scope) {
     let vm = this;
 
+    vm.background = '';
     vm.hour = [];
     vm.day = {};
+    vm.timespan = 60 * 60 * 1000 * 5;
 
-    vm.current = (() => {
+    const currentWeather = (() => {
         let timer;
-        console.log('timer');
+
         return () => {
-            console.log('restart timer');
             if (timer !== undefined) {
                 clearTimeout(timer);
             }
@@ -23,8 +25,37 @@ const WeatherController = function (socket, $scope) {
         }
     })();
 
-    vm.timespan = 60 * 60 * 1000 * 5;
+    const background = ((background) => {
+        let season = dateToSeason();
 
+        const getBackground = () => {
+            let currentTime = new Date(),
+                currentSeason = season(currentTime).toLowerCase(),
+                hour = currentTime.getHours();
+
+            if (hour >= 4 && hour < 10) {
+                return backgrounds[currentSeason]['morning'];
+            }
+
+            if (hour >= 10 && hour < 16) {
+                return backgrounds[currentSeason]['noon'];
+            }
+
+            if (hour >= 16 && hour < 22) {
+                return backgrounds[currentSeason]['evening'];
+            }
+
+            if (hour >= 22 && hour < 4) {
+                return backgrounds[currentSeason]['night'];
+            }
+        };
+
+        vm.background = getBackground();
+
+        setInterval(() => {
+            vm.background = getBackground();
+        }, 60 * 60 * 1000);
+    })();
 
     vm.next = () => {
         let requestTime = vm.hour[0].time + vm.timespan;
@@ -38,7 +69,7 @@ const WeatherController = function (socket, $scope) {
             time: requestTime
         });
 
-        vm.current();
+        currentWeather();
     };
 
     vm.prev = () => {
@@ -53,7 +84,7 @@ const WeatherController = function (socket, $scope) {
             time: requestTime
         });
 
-        vm.current();
+        currentWeather();
     };
 
     socket.listen('weather-hourly', (hours) => {

@@ -6,8 +6,6 @@
 $margin: 15px;
 $padding: 20px;
 $font-color: #1a1a1a;
-
-$wallpaper: 'https://unsplash.it/1920/1080';
 $body-index: -10;
 
 //
@@ -46,7 +44,6 @@ body {
         left: 0;
         width: 100%;
         height: 100%;
-        background-image: url($wallpaper);
         background-repeat: no-repeat;
         background-position: center center;
         background-size: 100% 100%;
