@@ -23,14 +23,25 @@ const publishDay = (socket, time) => {
         })));
 };
 
+const publishNow = (socket, time) => {
+    db.now.get(time)
+        .then((data) => socket.send(JSON.stringify({
+            type: 'weather-now',
+            data: data
+        })));
+};
+
 const messageBus = (socket, signal) => {
     let message = JSON.parse(signal);
     switch (message.type) {
+        case 'weather-daily':
+            publishDay(socket, message.data.time);
+        break;
         case 'weather-daytime':
             publishDaytime(socket, message.data.time);
         break;
-        case 'weather-daily':
-            publishDay(socket, message.data.time);
+        case 'weather-now':
+            publishNow(socket, message.data.time);
         break;
     }
 };
@@ -44,6 +55,12 @@ const updateDaytime = (time) => {
 const updateDays = (time) => {
     Object.keys(peers).forEach((key) => {
         publishDay(peers[key], time);
+    });
+};
+
+const updateNow = (time) => {
+    Object.keys(peers).forEach((key) => {
+        publishNow(peers[key], time);
     });
 };
 
@@ -66,13 +83,15 @@ export default (dbConnection, socketServer) => {
         });
 
         // initial publish data right after connection
-        publishDaytime(socket);
         publishDay(socket);
+        publishDaytime(socket);
+        publishNow(socket);
     });
 
     return {
         updateDaytime: updateDaytime,
-        updateDays: updateDays
+        updateDays: updateDays,
+        updateNow: updateNow
     }
 
 };

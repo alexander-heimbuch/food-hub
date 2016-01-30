@@ -8,7 +8,7 @@ let conn;
 /*
     Utils
  */
-const transformHour = (timestamp, hour) => {
+const transformHour = (timestamp, hour = new Date().getHours()) => {
     let time = new Date(timestamp);
 
     time.setMinutes(0)
@@ -57,6 +57,14 @@ const getDaytime = (day = new Date().getTime()) =>
                 .then((cursor) => cursor.toArray())
         );
 
+const getNow = (day = new Date().getTime()) =>
+   tableDaytime()
+        .then((table) =>
+            table
+                .get(transformHour(day))
+                .run(conn)
+        );
+
 
 const updateDaytime = (hours) =>
     tableDaytime()
@@ -103,6 +111,9 @@ export default (connection) => {
             create: tableDaytime,
             get: getDaytime,
             update: updateDaytime
+        },
+        now: {
+            get: getNow
         },
         daily: {
             create: tableDays,

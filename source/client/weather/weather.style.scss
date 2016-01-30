@@ -31,7 +31,7 @@ $weather-icon-size: 50px;
         }
     }
 
-    .weather-hour-container {
+    .weather-daytime-container {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -65,7 +65,7 @@ $weather-icon-size: 50px;
             font-size: 1.4em;
             font-weight: 300;
             text-transform: uppercase;
-            margin: 0 auto $margin * 2 auto;
+            margin: 0 auto $margin * 3 auto;
         }
 
         .icon {
@@ -77,13 +77,12 @@ $weather-icon-size: 50px;
 
         .temperature {
             display: block;
-            margin: 0 auto $margin * 2 auto;
+            margin: 0 auto $margin * 3 auto;
             padding-left: 0.5em;
             font-size: 1.5em;
         }
 
         .precip {
-
             .icon {
                 display: block;
                 margin: 0 auto 0 auto;
@@ -112,5 +111,13 @@ $weather-icon-size: 50px;
         expand {
             @extend .visually-hidden
         }
+    }
+
+    hr {
+        width: 80%;
+        margin: $margin * 2 auto;
+        height: 0;
+        border-top: 1px dotted lighten($font-color, 10%);
+        overflow: hidden;
     }
 }

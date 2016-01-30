@@ -4,8 +4,8 @@
       <span class="summary">{{vm.day.summary}}</span>
   </div>
 
-  <div class="weather-hour-container">
-    <div ng-repeat="weather in vm.hour" class="weather-hour">
+  <div class="weather-daytime-container">
+    <div ng-repeat="weather in vm.daytime" class="weather-hour">
       <time class="daytime" datetime="{{weather.time | date:'yyyy-MM-dd HH:mm:ss Z'}}">{{weather.time | daytime}}</time>
       <icon class="icon {{weather.icon}}"></icon>
       <span class="temperature">{{weather.temperature | number:0}} C&deg;</span>
@@ -16,6 +16,11 @@
     </div>
   </div>
 
+  <hr />
+
+  <div class="weather-now-container">
+
+  </div>
 <style>
   body:before {background-image: url({{vm.background}});}
 </style>

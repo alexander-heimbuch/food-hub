@@ -7,8 +7,10 @@ const WeatherController = function (socket, $scope) {
     let vm = this;
 
     vm.background = '';
-    vm.hour = [];
     vm.day = {};
+    vm.daytime = [];
+    vm.now = {};
+
     vm.timespan = 60 * 60 * 1000 * 5;
 
     const currentWeather = (() => {
@@ -73,11 +75,12 @@ const WeatherController = function (socket, $scope) {
     };
 
     socket.listen('weather-daytime', (hours) => {
-        console.log(hours);
-
+        if (hours === null) {
+            return;
+        }
 
         $scope.$apply(() => {
-            vm.hour = hours;
+            vm.daytime = hours;
         });
     });
 
@@ -88,6 +91,16 @@ const WeatherController = function (socket, $scope) {
 
         $scope.$apply(() => {
             vm.day = day;
+        });
+    });
+
+    socket.listen('weather-now', (now) => {
+        if (now === null) {
+            return;
+        }
+
+        $scope.$apply(() => {
+            vm.now = now;
         });
     });
 }

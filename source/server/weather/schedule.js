@@ -26,15 +26,15 @@ const daily = () => {
     messaging.updateDays();
 }
 
-const daytime = () => {
+const hourly = () => {
     // Update Database hourly with service data
     service.hourly()
         .then(db.daytime.update);
 
     // Publish Hour Switch to all clients
     messaging.updateDaytime();
+    messaging.updateNow();
 };
-
 
 export default (dbConnection, notify) => {
     db = database(dbConnection);
@@ -42,7 +42,7 @@ export default (dbConnection, notify) => {
     messaging = notify;
 
     startUp();
-    schedule.scheduleJob('0 * * * *', daytime);
+    schedule.scheduleJob('0 * * * *', hourly);
     schedule.scheduleJob('0 0 * * *', daily);
 
     return Bluebird.resolve(dbConnection);

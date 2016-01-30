@@ -29,7 +29,7 @@ export const daily = () =>
     forecast.fetch(config.service.lat, config.service.long, config.service.options)
         .then((result) => {
             // convert to js miliseconds
-            let data = result.daily.data.map((item) => {
+            result.daily.data.map((item) => {
                 item.time = item.time * 1000
                 return item;
             });
