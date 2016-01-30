@@ -7,10 +7,10 @@ let db;
 
 const peers = {};
 
-const publishHours = (socket, time, span) => {
-    db.hourly.get.timespan(time, span)
+const publishDaytime = (socket, time) => {
+    db.daytime.get(time)
         .then((data) => socket.send(JSON.stringify({
-            type: 'weather-hourly',
+            type: 'weather-daytime',
             data: data
         })));
 };
@@ -26,8 +26,8 @@ const publishDay = (socket, time) => {
 const messageBus = (socket, signal) => {
     let message = JSON.parse(signal);
     switch (message.type) {
-        case 'weather-hourly':
-            publishHours(socket, message.data.time, message.data.span);
+        case 'weather-daytime':
+            publishDaytime(socket, message.data.time);
         break;
         case 'weather-daily':
             publishDay(socket, message.data.time);
@@ -35,9 +35,9 @@ const messageBus = (socket, signal) => {
     }
 };
 
-const updateHours = (time, span) => {
+const updateDaytime = (time) => {
     Object.keys(peers).forEach((key) => {
-        publishHours(peers[key], time, span);
+        publishDaytime(peers[key], time);
     });
 };
 
@@ -66,12 +66,12 @@ export default (dbConnection, socketServer) => {
         });
 
         // initial publish data right after connection
-        publishHours(socket);
+        publishDaytime(socket);
         publishDay(socket);
     });
 
     return {
-        updateHours: updateHours,
+        updateDaytime: updateDaytime,
         updateDays: updateDays
     }
 

@@ -11,7 +11,7 @@ let db,
 
 const startUp = () => {
     service.hourly()
-        .then(db.hourly.update);
+        .then(db.daytime.update);
 
     service.daily()
         .then(db.daily.update);
@@ -26,13 +26,13 @@ const daily = () => {
     messaging.updateDays();
 }
 
-const hourly = () => {
+const daytime = () => {
     // Update Database hourly with service data
     service.hourly()
-        .then(db.hourly.update);
+        .then(db.daytime.update);
 
     // Publish Hour Switch to all clients
-    messaging.updateHours();
+    messaging.updateDaytime();
 };
 
 
@@ -42,7 +42,7 @@ export default (dbConnection, notify) => {
     messaging = notify;
 
     startUp();
-    schedule.scheduleJob('0 * * * *', hourly);
+    schedule.scheduleJob('0 * * * *', daytime);
     schedule.scheduleJob('0 0 * * *', daily);
 
     return Bluebird.resolve(dbConnection);

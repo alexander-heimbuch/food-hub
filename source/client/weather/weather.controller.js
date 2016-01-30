@@ -1,5 +1,6 @@
 /*eslint-env browser, es6*/
 import dateToSeason from 'date-season';
+import dayTime from './lib/daytime';
 import backgrounds from 'json!./weather.backgrounds.json';
 
 const WeatherController = function (socket, $scope) {
@@ -19,7 +20,7 @@ const WeatherController = function (socket, $scope) {
             }
 
             timer = setTimeout(() => {
-                socket.send('weather-hourly', {});
+                socket.send('weather-daytime', {});
                 socket.send('weather-daily', {});
              }, 60 * 1000 * 10);
         }
@@ -31,23 +32,9 @@ const WeatherController = function (socket, $scope) {
         const getBackground = () => {
             let currentTime = new Date(),
                 currentSeason = season(currentTime).toLowerCase(),
-                hour = currentTime.getHours();
+                currentDaytime = dayTime(currentTime).toLowerCase();
 
-            if (hour >= 4 && hour < 10) {
-                return backgrounds[currentSeason]['morning'];
-            }
-
-            if (hour >= 10 && hour < 16) {
-                return backgrounds[currentSeason]['noon'];
-            }
-
-            if (hour >= 16 && hour < 22) {
-                return backgrounds[currentSeason]['evening'];
-            }
-
-            if (hour >= 22 && hour < 4) {
-                return backgrounds[currentSeason]['night'];
-            }
+            return backgrounds[currentSeason][currentDaytime];
         };
 
         vm.background = getBackground();
@@ -60,9 +47,8 @@ const WeatherController = function (socket, $scope) {
     vm.next = () => {
         let requestTime = vm.hour[0].time + vm.timespan;
 
-        socket.send('weather-hourly', {
-            time: requestTime,
-            span: 5
+        socket.send('weather-daytime', {
+            time: requestTime
         });
 
         socket.send('weather-daily', {
@@ -75,9 +61,8 @@ const WeatherController = function (socket, $scope) {
     vm.prev = () => {
         let requestTime = vm.hour[0].time - vm.timespan;
 
-        socket.send('weather-hourly', {
-            time: requestTime,
-            span: 5
+        socket.send('weather-daytime', {
+            time: requestTime
         });
 
         socket.send('weather-daily', {
@@ -87,10 +72,9 @@ const WeatherController = function (socket, $scope) {
         currentWeather();
     };
 
-    socket.listen('weather-hourly', (hours) => {
-        if (hours.length < 5) {
-            return;
-        }
+    socket.listen('weather-daytime', (hours) => {
+        console.log(hours);
+
 
         $scope.$apply(() => {
             vm.hour = hours;

@@ -8,12 +8,13 @@ let conn;
 /*
     Utils
  */
-const transformHour = (timestamp) => {
+const transformHour = (timestamp, hour) => {
     let time = new Date(timestamp);
 
     time.setMinutes(0)
     time.setSeconds(0);
     time.setMilliseconds(0);
+    time.setHours(hour);
 
     return time.getTime();
 };
@@ -30,33 +31,35 @@ const transformDay = (timestamp) => {
 };
 
 /*
-    Database Hourly Methods
+    Database Daytime Methods
  */
-const tableHours = () =>
+const tableDaytime = () =>
     r.tableList().run(conn)
         .then((list) => {
-            if (list.indexOf(config.table.hourly) === -1) {
-                return r.tableCreate(config.table.hourly, {primaryKey: 'time'}).run(conn)
-                    .return(r.table(config.table.hourly));
+            if (list.indexOf(config.table.daytime) === -1) {
+                return r.tableCreate(config.table.daytime, {primaryKey: 'time'}).run(conn)
+                    .return(r.table(config.table.daytime));
             }
-            return Bluebird.resolve(r.table(config.table.hourly));
+            return Bluebird.resolve(r.table(config.table.daytime));
         });
 
-const getHoursTimeSpan = (start = new Date().getTime(), span = 5) => {
-    start = transformHour(start);
-
-    return tableHours()
+const getDaytime = (day = new Date().getTime()) =>
+   tableDaytime()
         .then((table) =>
             table
-                .orderBy({index: 'time'})
-                .between(start, start + (60 * 60 * 1000 * span))
+                .getAll(
+                    transformHour(day, 7),
+                    transformHour(day, 12),
+                    transformHour(day, 16),
+                    transformHour(day, 22)
+                )
                 .run(conn)
                 .then((cursor) => cursor.toArray())
         );
-};
 
-const updateHours = (hours) =>
-    tableHours()
+
+const updateDaytime = (hours) =>
+    tableDaytime()
         .then((table) =>
             table
                 .insert(hours)
@@ -96,12 +99,10 @@ export default (connection) => {
     conn = connection;
 
     return {
-        hourly: {
-            create: tableHours,
-            get: {
-                timespan: getHoursTimeSpan
-            },
-            update: updateHours
+        daytime: {
+            create: tableDaytime,
+            get: getDaytime,
+            update: updateDaytime
         },
         daily: {
             create: tableDays,

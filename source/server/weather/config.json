@@ -1,6 +1,6 @@
 {
     "table": {
-        "hourly": "weather_hourly",
+        "daytime": "weather_daytime",
         "daily": "weather_daily"
     },
     "service": {
