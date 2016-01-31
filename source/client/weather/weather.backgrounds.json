@@ -1,8 +1,20 @@
 {
     "winter": {
-        "morning": "https://unsplash.com/photos/oSf8ePoG9NU/download",
-        "noon": "https://unsplash.com/photos/dqMxDqdhg_4/download",
-        "evening": "https://unsplash.com/photos/L5ewiAXs0S4/download",
-        "night": "https://unsplash.com/photos/qUToqliACNA/download"
+        "morning": {
+          "image": "https://unsplash.com/photos/oSf8ePoG9NU/download",
+          "invertText": true
+        },
+        "noon": {
+          "image": "https://unsplash.com/photos/dqMxDqdhg_4/download",
+          "invertText": false
+        },
+        "evening": {
+          "image": "https://unsplash.com/photos/L5ewiAXs0S4/download",
+          "invertText": false
+        },
+        "night": {
+          "image": "https://unsplash.com/photos/qUToqliACNA/download",
+          "invertText": true
+        }
     }
 }

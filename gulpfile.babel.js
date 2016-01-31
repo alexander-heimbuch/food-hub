@@ -98,7 +98,9 @@ gulp.task('assets', () => {
 
 gulp.task('styles', () => {
     return gulp.src(clientSource + '/main.scss')
-        .pipe(sass().on('error', sass.logError))
+        .pipe(sass({
+            includePaths: ['node_modules/']
+        }).on('error', sass.logError))
         .pipe(minify())
         .pipe(prefixer({
             browsers: ['last 2 versions'],
@@ -109,7 +111,9 @@ gulp.task('styles', () => {
 
 gulp.task('icons', () => {
     return gulp.src(clientSource + '/assets/icons.scss')
-        .pipe(sass().on('error', sass.logError))
+        .pipe(sass({
+            includePaths: ['node_modules/']
+        }).on('error', sass.logError))
         .pipe(minify())
         .pipe(prefixer({
             browsers: ['last 2 versions'],

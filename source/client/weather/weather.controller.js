@@ -7,11 +7,12 @@ const WeatherController = function (socket, $scope) {
     let vm = this;
 
     vm.background = '';
+    vm.invertColor = false;
     vm.day = {};
     vm.daytime = [];
-    vm.now = {};
+    vm.details = {};
 
-    vm.timespan = 60 * 60 * 1000 * 5;
+    vm.timespan = 60 * 60 * 1000 * 24;
 
     const currentWeather = (() => {
         let timer;
@@ -28,7 +29,7 @@ const WeatherController = function (socket, $scope) {
         }
     })();
 
-    const background = ((background) => {
+    const updateBackground = () => {
         let season = dateToSeason();
 
         const getBackground = () => {
@@ -39,15 +40,12 @@ const WeatherController = function (socket, $scope) {
             return backgrounds[currentSeason][currentDaytime];
         };
 
-        vm.background = getBackground();
-
-        setInterval(() => {
-            vm.background = getBackground();
-        }, 60 * 60 * 1000);
-    })();
+        vm.background = getBackground().image;
+        vm.invertColor = getBackground().invertText;
+    };
 
     vm.next = () => {
-        let requestTime = vm.hour[0].time + vm.timespan;
+        let requestTime = vm.daytime[0].time + vm.timespan;
 
         socket.send('weather-daytime', {
             time: requestTime
@@ -61,7 +59,7 @@ const WeatherController = function (socket, $scope) {
     };
 
     vm.prev = () => {
-        let requestTime = vm.hour[0].time - vm.timespan;
+        let requestTime = vm.daytime[0].time - vm.timespan;
 
         socket.send('weather-daytime', {
             time: requestTime
@@ -95,13 +93,14 @@ const WeatherController = function (socket, $scope) {
     });
 
     socket.listen('weather-now', (now) => {
-        console.log(now);
         if (now === null) {
             return;
         }
 
+        updateBackground();
+
         $scope.$apply(() => {
-            vm.now = now;
+            vm.details = now;
         });
     });
 }

@@ -1,4 +1,4 @@
-<section class="weather" id="weather-view" ng-swipe-left="vm.next($event)" ng-swipe-right="vm.prev($event)">
+<section class="weather" id="weather-view" ng-class="{'invert': vm.invertColor}" ng-swipe-left="vm.next($event)" ng-swipe-right="vm.prev($event)">
   <div class="weather-day">
       <time class="date" datetime="{{vm.day.time | date:'yyyy-MM-dd HH:mm:ss Z'}}">{{vm.day.time | date:'d. MMMM'}}</time>
       <span class="summary">{{vm.day.summary}}</span>
@@ -16,31 +16,42 @@
     </div>
   </div>
 
-  <hr />
-
-  <div class="weather-now-container">
-    <div class="column">
-      <h4>Temperature</h4>
-      <table>
-        <tr>
-          <td>Real:</td><td>{{vm.now.temperature | number:1}} C&deg;</td>
-        </tr>
-        <tr>
-          <td>Apparent:</td><td>{{vm.now.apparentTemperature | number:1}} C&deg;</td>
-        </tr>
-      </table>
+  <div class="weather-details-container">
+    <div class="row">
+      <div class="column">
+        <h4 datetime="{{vm.details.time | date:'yyyy-MM-dd HH:mm:ss Z'}}">{{vm.details.time | date:'HH:mm'}}</h4>
+      </div>
+      <div class="column">
+        <h4>Temperature</h4>
+      </div>
+      <div class="column">
+        <h4>Percip</h4>
+      </div>
     </div>
-
-    <div class="column">
-      <h4>Percip</h4>
-      <table>
-        <tr>
-          <td>Intensity:</td><td>{{vm.now.precipIntensity | number:1}} mm</td>
-        </tr>
-        <tr>
-          <td>Propability:</td><td>{{(100 * vm.now.precipProbability) || 0 | number:0}}%</td>
-        </tr>
-      </table>
+    <div class="row">
+      <div class="column">
+        <icon class="icon {{vm.details.icon}}"></icon>
+      </div>
+      <div class="column temperature">
+        <table>
+          <tr>
+            <td>Real:</td><td>{{vm.details.temperature | number:1}} C&deg;</td>
+          </tr>
+          <tr>
+            <td>Apparent:</td><td>{{vm.details.apparentTemperature | number:1}} C&deg;</td>
+          </tr>
+        </table>
+      </div>
+      <div class="column">
+        <table>
+          <tr>
+            <td>Intensity:</td><td>{{vm.details.precipIntensity | number:1}} mm</td>
+          </tr>
+          <tr>
+            <td>Propability:</td><td>{{(100 * vm.details.precipProbability) || 0 | number:0}}%</td>
+          </tr>
+        </table>
+      </div>
     </div>
   </div>
 <style>
