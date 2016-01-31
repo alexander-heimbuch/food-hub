@@ -57,7 +57,7 @@ const getDaytime = (day = new Date().getTime()) =>
                 .then((cursor) => cursor.toArray())
         );
 
-const getNow = (day = new Date().getTime()) =>
+const getDetails = (day = new Date().getTime()) =>
    tableDaytime()
         .then((table) =>
             table
@@ -112,8 +112,8 @@ export default (connection) => {
             get: getDaytime,
             update: updateDaytime
         },
-        now: {
-            get: getNow
+        details: {
+            get: getDetails
         },
         daily: {
             create: tableDays,

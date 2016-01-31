@@ -1,0 +1,28 @@
+//
+// Weather Day Directive Style
+
+.weather-day {
+    .weather-summary {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        width: 100%;
+        height: 40%;
+        text-align: center;
+        font-weight: 300;
+
+        .date {
+            font-size: 1.8em;
+            text-transform: uppercase;
+        }
+
+        .summary {
+            font-size: 1.2em;
+        }
+    }
+
+    .weather-daytime-container {
+        height: 60%;
+    }
+}

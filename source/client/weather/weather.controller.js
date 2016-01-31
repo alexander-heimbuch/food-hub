@@ -6,12 +6,6 @@ import backgrounds from 'json!./weather.backgrounds.json';
 const WeatherController = function (socket, $scope) {
     let vm = this;
 
-    vm.background = '';
-    vm.invertColor = false;
-    vm.day = {};
-    vm.daytime = [];
-    vm.details = {};
-
     vm.timespan = 60 * 60 * 1000 * 24;
 
     const currentWeather = (() => {
@@ -44,43 +38,39 @@ const WeatherController = function (socket, $scope) {
         vm.invertColor = getBackground().invertText;
     };
 
-    vm.next = () => {
-        let requestTime = vm.daytime[0].time + vm.timespan;
+    const
 
-        socket.send('weather-daytime', {
-            time: requestTime
-        });
+    vm.next = () => {
+        let time = vm.time + vm.timespan;
 
         socket.send('weather-daily', {
-            time: requestTime
+            time: time
+        });
+
+        socket.send('weather-daytime', {
+            time: time
         });
 
         currentWeather();
     };
 
     vm.prev = () => {
-        let requestTime = vm.daytime[0].time - vm.timespan;
-
-        socket.send('weather-daytime', {
-            time: requestTime
-        });
+        let time = vm.time - vm.timespan;
 
         socket.send('weather-daily', {
             time: requestTime
         });
 
+        socket.send('weather-daily', {
+            time: time
+        });
+
+        socket.send('weather-daytime', {
+            time: time
+        });
+
         currentWeather();
     };
-
-    socket.listen('weather-daytime', (hours) => {
-        if (hours === null) {
-            return;
-        }
-
-        $scope.$apply(() => {
-            vm.daytime = hours;
-        });
-    });
 
     socket.listen('weather-daily', (day) => {
         if (day === null) {
@@ -88,21 +78,13 @@ const WeatherController = function (socket, $scope) {
         }
 
         $scope.$apply(() => {
-            vm.day = day;
+            vm.time = day.time;
         });
     });
 
-    socket.listen('weather-now', (now) => {
-        if (now === null) {
-            return;
-        }
-
-        updateBackground();
-
-        $scope.$apply(() => {
-            vm.details = now;
-        });
-    });
+    //socket.listen('weather-details', updateBackground);
+    vm.time = new Date().getTime();
+    updateBackground();
 }
 
 export default ['socket' , '$scope', WeatherController];

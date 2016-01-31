@@ -1,0 +1,9 @@
+<div class="weather-day">
+  <div class="weather-summary">
+    <time class="date" datetime="{{vm.day.time | date:'yyyy-MM-dd HH:mm:ss Z'}}">{{vm.day.time | date:'d. MMMM'}}</time>
+    <span class="summary">{{vm.day.summary}}</span>
+  </div>
+    <div class="weather-daytime-container">
+      <weather-daytime time="vm.day.time"></weather-daytime>
+  </div>
+</div>

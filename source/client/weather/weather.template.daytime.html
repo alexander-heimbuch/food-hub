@@ -1,0 +1,9 @@
+<div class="weather-hour" ng-repeat="daytime in vm.daytime | orderBy:'time'">
+  <time class="daytime" datetime="{{daytime.time | date:'yyyy-MM-dd HH:mm:ss Z'}}">{{daytime.time | daytime}}</time>
+  <icon class="icon {{daytime.icon}}"></icon>
+  <span class="temperature">{{daytime.temperature | number:0}} C&deg;</span>
+  <div class="precip">
+    <icon class="icon rain-drop"></icon>
+    <span class="percentage">{{(100 * daytime.precipProbability) || 0 | number:0}}%</span>
+  </div>
+</div>

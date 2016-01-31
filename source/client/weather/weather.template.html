@@ -1,59 +1,7 @@
 <section class="weather" id="weather-view" ng-class="{'invert': vm.invertColor}" ng-swipe-left="vm.next($event)" ng-swipe-right="vm.prev($event)">
-  <div class="weather-day">
-      <time class="date" datetime="{{vm.day.time | date:'yyyy-MM-dd HH:mm:ss Z'}}">{{vm.day.time | date:'d. MMMM'}}</time>
-      <span class="summary">{{vm.day.summary}}</span>
-  </div>
-
-  <div class="weather-daytime-container">
-    <div ng-repeat="weather in vm.daytime | orderBy:'time'" class="weather-hour">
-      <time class="daytime" datetime="{{weather.time | date:'yyyy-MM-dd HH:mm:ss Z'}}">{{weather.time | daytime}}</time>
-      <icon class="icon {{weather.icon}}"></icon>
-      <span class="temperature">{{weather.temperature | number:0}} C&deg;</span>
-      <div class="precip">
-        <icon class="icon rain-drop"></icon>
-        <span class="percentage">{{(100 * weather.precipProbability) || 0 | number:0}}%</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="weather-details-container">
-    <div class="row">
-      <div class="column">
-        <h4 datetime="{{vm.details.time | date:'yyyy-MM-dd HH:mm:ss Z'}}">{{vm.details.time | date:'HH:mm'}}</h4>
-      </div>
-      <div class="column">
-        <h4>Temperature</h4>
-      </div>
-      <div class="column">
-        <h4>Percip</h4>
-      </div>
-    </div>
-    <div class="row">
-      <div class="column">
-        <icon class="icon {{vm.details.icon}}"></icon>
-      </div>
-      <div class="column temperature">
-        <table>
-          <tr>
-            <td>Real:</td><td>{{vm.details.temperature | number:1}} C&deg;</td>
-          </tr>
-          <tr>
-            <td>Apparent:</td><td>{{vm.details.apparentTemperature | number:1}} C&deg;</td>
-          </tr>
-        </table>
-      </div>
-      <div class="column">
-        <table>
-          <tr>
-            <td>Intensity:</td><td>{{vm.details.precipIntensity | number:1}} mm</td>
-          </tr>
-          <tr>
-            <td>Propability:</td><td>{{(100 * vm.details.precipProbability) || 0 | number:0}}%</td>
-          </tr>
-        </table>
-      </div>
-    </div>
-  </div>
+  <weather-day time="vm.time"></weather-day>
+  <weather-details></weather-details>
+</section>
 <style>
   body:before {background-image: url({{vm.background}});}
 </style>
