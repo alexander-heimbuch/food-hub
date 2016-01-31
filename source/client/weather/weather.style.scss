@@ -117,7 +117,9 @@ $weather-icon-size: 50px;
         width: 80%;
         margin: $margin * 2 auto;
         height: 0;
+        border: none;
         border-top: 1px dotted lighten($font-color, 10%);
         overflow: hidden;
+        background: transparent;
     }
 }

@@ -95,6 +95,7 @@ const WeatherController = function (socket, $scope) {
     });
 
     socket.listen('weather-now', (now) => {
+        console.log(now);
         if (now === null) {
             return;
         }

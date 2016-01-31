@@ -5,7 +5,7 @@
   </div>
 
   <div class="weather-daytime-container">
-    <div ng-repeat="weather in vm.daytime" class="weather-hour">
+    <div ng-repeat="weather in vm.daytime | orderBy:'time'" class="weather-hour">
       <time class="daytime" datetime="{{weather.time | date:'yyyy-MM-dd HH:mm:ss Z'}}">{{weather.time | daytime}}</time>
       <icon class="icon {{weather.icon}}"></icon>
       <span class="temperature">{{weather.temperature | number:0}} C&deg;</span>
@@ -19,7 +19,29 @@
   <hr />
 
   <div class="weather-now-container">
+    <div class="column">
+      <h4>Temperature</h4>
+      <table>
+        <tr>
+          <td>Real:</td><td>{{vm.now.temperature | number:1}} C&deg;</td>
+        </tr>
+        <tr>
+          <td>Apparent:</td><td>{{vm.now.apparentTemperature | number:1}} C&deg;</td>
+        </tr>
+      </table>
+    </div>
 
+    <div class="column">
+      <h4>Percip</h4>
+      <table>
+        <tr>
+          <td>Intensity:</td><td>{{vm.now.precipIntensity | number:1}} mm</td>
+        </tr>
+        <tr>
+          <td>Propability:</td><td>{{(100 * vm.now.precipProbability) || 0 | number:0}}%</td>
+        </tr>
+      </table>
+    </div>
   </div>
 <style>
   body:before {background-image: url({{vm.background}});}
